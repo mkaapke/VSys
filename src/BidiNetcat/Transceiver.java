@@ -30,7 +30,7 @@ public class Transceiver implements Actor {
         thread = new Thread(receiver);
     }
 
-    public void startReceiving() {
+    void startReceiving() {
         thread.start();
     }
 
