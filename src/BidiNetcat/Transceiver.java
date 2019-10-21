@@ -23,14 +23,14 @@ public class Transceiver implements Actor {
         thread = new Thread(receiver);
     }
 
-    public Transceiver(int port, ReaderPrinter readerPrinter) throws SocketException, UnknownHostException {
+    public Transceiver(int port, ReaderPrinter readerPrinter) throws SocketException {
         udpSocket = new UDPSocket(port);
         transmitter = new Transmitter(udpSocket);
         receiver = new Receiver(udpSocket, readerPrinter);
         thread = new Thread(receiver);
     }
 
-    public void startReceiving() throws IOException {
+    public void startReceiving() {
         thread.start();
     }
 

@@ -11,7 +11,7 @@ public class Printer implements Actor {
     }
 
     @Override
-    public void shutdown() throws IOException {
+    public void shutdown() {
 
     }
 }

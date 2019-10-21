@@ -1,14 +1,12 @@
 package Netcat;
 
 import java.io.IOException;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 
 public class Transmitter implements Actor {
 
     private UDPSocket udpSocket;
 
-    public Transmitter(UDPSocket udpSocket) throws UnknownHostException, SocketException {
+    public Transmitter(UDPSocket udpSocket)  {
         this.udpSocket = udpSocket;
     }
 

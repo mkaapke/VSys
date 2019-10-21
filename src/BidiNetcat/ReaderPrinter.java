@@ -22,20 +22,15 @@ public class ReaderPrinter implements Actor {
         thread = new Thread(reader);
     }
 
-    public ReaderPrinter(int port) throws SocketException, UnknownHostException {
+    public ReaderPrinter(int port) throws SocketException {
         this.printer = new Printer();
         this.transceiver = new Transceiver(port, this);
         this.reader = new Reader(transceiver);
         thread = new Thread(reader);
     }
 
-    public void startReader() throws IOException {
+    public void startReader() {
         thread.start();
-        transceiver.startReceiving();
-    }
-
-    public void startZitate() throws IOException {
-        transceiver.tell("", null);
         transceiver.startReceiving();
     }
 

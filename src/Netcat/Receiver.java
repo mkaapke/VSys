@@ -11,7 +11,7 @@ public class Receiver implements Runnable{
     private ReaderPrinter readerPrinter;
     private int maxBytes = 100000;
 
-    public Receiver(UDPSocket udpSocket, ReaderPrinter readerPrinter) throws SocketException {
+    public Receiver(UDPSocket udpSocket, ReaderPrinter readerPrinter) {
         this.udpSocket = udpSocket;
         this.readerPrinter = readerPrinter;
     }
