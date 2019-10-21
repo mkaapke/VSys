@@ -1,29 +1,30 @@
 package Netcat;
 
+import BidiNetcat.Transceiver;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-public class Reader {
+public class Reader implements Runnable{
 
-    private Transmitter transmitter;
+    private Transceiver transceiver;
     private BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
-    Reader(String host, int port) throws UnknownHostException {
-        transmitter = new Transmitter(host, port);
+    public Reader(Transceiver transceiver) {
+        this.transceiver = transceiver;
     }
 
     public void reader() throws IOException {
-        String message = "";
+        String message;
         while((message = in.readLine()) != null) {
-            transmitter.tell(message, null);
+            transceiver.tell(message, null);
         }
-        transmitter.shutdown();
+        transceiver.shutdown();
     }
 
     /**
@@ -44,9 +45,18 @@ public class Reader {
             String message = "";
             message = time + " " + random;
 
-            transmitter.tell(message, null);
+            transceiver.tell(message, null);
 
             TimeUnit.SECONDS.sleep(5);
+        }
+    }
+
+    @Override
+    public void run() {
+        try {
+            this.reader();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

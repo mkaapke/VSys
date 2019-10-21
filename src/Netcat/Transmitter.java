@@ -1,14 +1,15 @@
 package Netcat;
 
 import java.io.IOException;
+import java.net.SocketException;
 import java.net.UnknownHostException;
 
 public class Transmitter implements Actor {
 
     private UDPSocket udpSocket;
 
-    Transmitter(String host, int port) throws UnknownHostException {
-        udpSocket = new UDPSocket(host, port);
+    public Transmitter(UDPSocket udpSocket) throws UnknownHostException, SocketException {
+        this.udpSocket = udpSocket;
     }
 
     @Override
@@ -19,5 +20,6 @@ public class Transmitter implements Actor {
     @Override
     public void shutdown() throws IOException {
         udpSocket.send("\u0004");
+        System.err.println("Ich kann nicht mehr senden!");
     }
 }

@@ -1,4 +1,4 @@
-package Netcat;
+/*package Netcat;
 
 import java.io.IOException;
 
@@ -23,4 +23,4 @@ public class Netcat {
         }
 
     }
-}
+}*/

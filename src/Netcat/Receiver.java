@@ -1,23 +1,35 @@
 package Netcat;
 
-import java.io.IOException;
+import BidiNetcat.ReaderPrinter;
 
-public class Receiver {
+import java.io.IOException;
+import java.net.SocketException;
+
+public class Receiver implements Runnable{
 
     private UDPSocket udpSocket;
-    private Printer printer = new Printer();
-    private int maxBytes = 1024;
+    private ReaderPrinter readerPrinter;
+    private int maxBytes = 100000;
 
-    Receiver (int port, int maxBytes) {
-        udpSocket = new UDPSocket(port);
-        this.maxBytes = maxBytes;
+    public Receiver(UDPSocket udpSocket, ReaderPrinter readerPrinter) throws SocketException {
+        this.udpSocket = udpSocket;
+        this.readerPrinter = readerPrinter;
     }
 
     public void receiver() throws IOException {
         String message;
         while(!(message = udpSocket.receive(maxBytes)).equals("\u0004")) {
-            printer.tell(message, null);
+            readerPrinter.tell(message, null);
         }
+        readerPrinter.shutdown();
     }
 
+    @Override
+    public void run() {
+        try {
+            this.receiver();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

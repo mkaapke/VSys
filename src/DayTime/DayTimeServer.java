@@ -1,5 +1,7 @@
 package DayTime;
 
+import BidiNetcat.ReaderPrinter;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.text.SimpleDateFormat;
@@ -15,7 +17,10 @@ public class DayTimeServer {
 
         int port = Integer.parseInt(args[0]);
 
-        try(DatagramSocket socket = new DatagramSocket(port)) {
+        ReaderPrinter rp = new ReaderPrinter(port);
+        rp.startReader();
+
+        /*try(DatagramSocket socket = new DatagramSocket(port)) {
             DatagramPacket packetIn = new DatagramPacket(new byte[BUFSIZE],BUFSIZE);
             DatagramPacket packetOut = new DatagramPacket(new byte[BUFSIZE],BUFSIZE);
 
@@ -33,6 +38,6 @@ public class DayTimeServer {
 
                 socket.send(packetOut);
             }
-        } catch (Exception e) { System.err.println(e); }
+        } catch (Exception e) { System.err.println(e); }*/
     }
 }

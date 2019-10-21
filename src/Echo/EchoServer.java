@@ -1,5 +1,8 @@
 package Echo;
 
+import BidiNetcat.ReaderPrinter;
+import BidiNetcat.Transceiver;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -13,9 +16,11 @@ public class EchoServer {
         }
 
         int port = Integer.parseInt(args[0]);
+        ReaderPrinter rp = new ReaderPrinter(port);
+        rp.startReader();
 
         // Socket an Port binden
-        try (DatagramSocket socket = new DatagramSocket(port)) {
+        /*try (DatagramSocket socket = new DatagramSocket(port)) {
 
             // Packet zum Empfangen bzw. Senden
             DatagramPacket packet = new DatagramPacket(new byte[BUFSIZE], BUFSIZE);
@@ -27,6 +32,6 @@ public class EchoServer {
                 //Packet an Absender zurücksckicken
                 socket.send(packet);
             }
-        } catch (IOException e) {System.err.println(e);}
+        } catch (IOException e) {System.err.println(e);}*/
     }
 }
