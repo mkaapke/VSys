@@ -25,6 +25,7 @@ public class Reader implements Runnable{
             transceiver.tell(message, null);
         }
         transceiver.shutdown();
+        in.close();
     }
 
     /**

@@ -1,12 +1,11 @@
 package BidiNetcat;
 
+import BidiNetcatTCP.Transceiver;
 import Netcat.Actor;
 import Netcat.Printer;
-import Netcat.Reader;
+import UniNetcatTCP.Reader;
 
 import java.io.IOException;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 
 public class ReaderPrinter implements Actor {
 
@@ -15,14 +14,14 @@ public class ReaderPrinter implements Actor {
     private Transceiver transceiver;
     private Thread thread;
 
-    public ReaderPrinter(String host, int port) throws SocketException, UnknownHostException {
+    public ReaderPrinter(String host, int port) throws IOException {
         this.printer = new Printer();
         this.transceiver = new Transceiver(host, port, this);
         this.reader = new Reader(transceiver);
         thread = new Thread(reader);
     }
 
-    public ReaderPrinter(int port) throws SocketException {
+    public ReaderPrinter(int port) throws IOException {
         this.printer = new Printer();
         this.transceiver = new Transceiver(port, this);
         this.reader = new Reader(transceiver);
@@ -31,7 +30,7 @@ public class ReaderPrinter implements Actor {
 
     public void startReader() {
         thread.start();
-        transceiver.startReceiving();
+        transceiver.startTransceiver();
     }
 
     @Override

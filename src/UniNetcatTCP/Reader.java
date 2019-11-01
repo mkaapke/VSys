@@ -1,5 +1,7 @@
 package UniNetcatTCP;
 
+import BidiNetcatTCP.Transceiver;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -8,20 +10,22 @@ import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-public class Reader {
-    private Transmitter transmitter;
+public class Reader implements Runnable{
+
+    private Transceiver transceiver;
     private BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
 
-    Reader(String host, int port) throws IOException {
-        transmitter = new Transmitter(host, port);
+    public Reader(Transceiver transceiver) throws IOException {
+        this.transceiver = transceiver;
     }
 
     public void reader() throws IOException {
         String message;
         while((message = in.readLine()) != null) {
-            transmitter.tell(message, null);
+            transceiver.tell(message, null);
         }
-        transmitter.shutdown();
+        transceiver.shutdown();
+        in.close();
     }
 
     /**
@@ -42,9 +46,18 @@ public class Reader {
             String message = "";
             message = time + " " + random;
 
-            transmitter.tell(message, null);
+            transceiver.tell(message, null);
 
             TimeUnit.SECONDS.sleep(5);
+        }
+    }
+
+    @Override
+    public void run() {
+        try {
+            reader();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -1,6 +1,6 @@
 package UniNetcatTCP;
-
-        import java.io.IOException;
+/*
+import java.io.IOException;
 
 public class NetcatTCP {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -22,4 +22,4 @@ public class NetcatTCP {
         }
 
     }
-}
+}*/

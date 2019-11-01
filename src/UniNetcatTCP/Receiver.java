@@ -1,29 +1,39 @@
 package UniNetcatTCP;
 
+import BidiNetcat.ReaderPrinter;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.ServerSocket;
 import java.net.Socket;
 
-class Receiver {
+public class Receiver implements Runnable{
 
-
-    private Printer printer = new Printer();
+    private Socket socket;
+    private ReaderPrinter rp;
     private BufferedReader in;
 
-    Receiver(int port) throws IOException {
-        ServerSocket serverSocket = new ServerSocket(port);
-        Socket socket = serverSocket.accept();
+    public Receiver(Socket socket, ReaderPrinter rp) throws IOException {
+        this.socket = socket;
+        this.rp = rp;
         in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
     }
 
     void receiver() throws IOException {
         String message;
         while(!(message = in.readLine()).equals("\u0004")) {
-            printer.tell(message, null);
+            rp.tell(message, null);
         }
-        printer.shutdown();
+        socket.shutdownInput();
         in.close();
+    }
+
+    @Override
+    public void run() {
+        try {
+            receiver();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
