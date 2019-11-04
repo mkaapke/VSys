@@ -33,6 +33,32 @@ public class ReaderPrinter implements Actor {
         transceiver.startTransceiver();
     }
 
+    /**
+     * Methode für den Daytime-Server
+     * @throws IOException
+     */
+    public void startDaytime() throws IOException {
+        transceiver.startDaytime();
+    }
+
+    /**
+     * Methode für den Echo-Server
+     * @param s
+     * @throws IOException
+     */
+    public void startEcho(String s) throws IOException {
+        transceiver.startEcho(s);
+    }
+
+    /**
+     * Methode für den Zitate-Server
+     * @param s
+     * @throws IOException
+     */
+    public void startZitate(String s) throws IOException {
+        transceiver.startZitate(s);
+    }
+
     @Override
     public void tell(String message, Actor sender) throws IOException {
         printer.tell(message, null);
