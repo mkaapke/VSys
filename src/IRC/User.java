@@ -1,16 +1,21 @@
 package IRC;
 
+import java.io.IOException;
+
 public class User {
     private String nick;
-    private String username;
+    private String fullname;
     private String address;
-    private Client client;
+    private boolean register;
+    private Client clientThread;
+    private boolean operator = false;
 
-    public User(String nick, String username, String address, Client client) {
+    public User(String nick, String fullname, String address, Client clientThread, boolean register) {
         this.nick = nick;
-        this.username = username;
+        this.fullname = fullname;
         this.address = address;
-        this.client = client;
+        this.clientThread = clientThread;
+        this.register = register;
     }
 
     public String getNick() {
@@ -21,6 +26,14 @@ public class User {
         this.nick = nick;
     }
 
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
+
     public String getAddress() {
         return address;
     }
@@ -29,19 +42,37 @@ public class User {
         this.address = address;
     }
 
-    public Client getClient() {
-        return client;
+    @Override
+    public boolean equals(Object obj) {
+        User temp = (User) obj;
+        return temp.getAddress().equals(this.address);
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public boolean isRegister() {
+        return register;
     }
 
-    public String getUsername() {
-        return username;
+    public void setRegister(boolean register) {
+        this.register = register;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public boolean isOperator() {
+        return operator;
+    }
+
+    public void setOperator(boolean operator) {
+        this.operator = operator;
+    }
+
+    public Client getClientThread() {
+        return clientThread;
+    }
+
+    public void setClientThread(Client clientThread) {
+        this.clientThread = clientThread;
+    }
+
+    public void sendMessage(String message) throws IOException {
+        clientThread.tell(message, null);
     }
 }
