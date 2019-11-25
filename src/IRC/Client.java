@@ -47,7 +47,7 @@ public class Client extends Thread implements Actor {
             tell(ircServer.getErrors().getMessage(421, null, null, null,
                     wrongCommand(message)), null);
         } else {
-            if (command.getParameters().length != command.getSize()) {
+            if (command.getParameters().length != command.getSize()) { //ERR_NEEDMOREPARAMS
                 tell(ircServer.getErrors().getMessage(130, null, null, null,
                         command.getName()), null);
             } else {
@@ -87,6 +87,12 @@ public class Client extends Thread implements Actor {
                 }
 
                 if (user.isRegister() && command.getName() == "PONG") {
+                }
+
+                if (user.isRegister() && command.getName() == "WHOIS") {
+                    if (command.getParameters()[1] != null) {
+                        tell(ircServer.whoIs(command.getParameters()[1]), null);
+                    }
                 }
 
                 if (user.isRegister() && command.getName() == "QUIT") {

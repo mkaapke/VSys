@@ -17,6 +17,7 @@ public class Commands {
         commands.add(new Command("NOTICE", 3, false));
         commands.add(new Command("PING", 1, true));
         commands.add(new Command("PONG", 1, true));
+        commands.add(new Command("WHOIS", 2, true));
     }
 
     public List<Command> getCommands() {

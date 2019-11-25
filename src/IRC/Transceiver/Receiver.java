@@ -37,9 +37,9 @@ public class Receiver implements Runnable {
     private void receiver() throws IOException {
         String message;
         while(!(message = in.readLine()).equals("\u0004")) {
-            //client.request(message);
-            //zitate.tell(zitate(), null);
-            echo.tell(message, null);
+            client.request(message);
+            //zitate.tell(zitate(), null); // Zitate-Server
+            //echo.tell(message, null); // Echo-Server
         }
         socket.shutdownInput();
     }
