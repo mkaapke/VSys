@@ -23,7 +23,9 @@ public class Errors {
         errors.put(412, new Error(412, host + " ERR_NOTEXTTOSEND", "<nick> :No text to send found."));
         errors.put(401, new Error(401, host + " ERR_NOSUCHNICK", "<nick>: User not found"));
         errors.put(421, new Error(421, host + " ERR_UNKNOWNCOMMAND", "<command> :Unknown command"));
-
+        errors.put(403, new Error(403, host + " ERR_NOSUCHCHANNEL", "<nick> :No such channel"));
+        errors.put(404, new Error(404, host + " ERR_CANNOTSENDTOCHAN", "<nick> :Cannot send to Channel"));
+        errors.put(442, new Error(442, host + " ERR_NOTONCHANNEL", "<nick> :You're not on that channel"));
     }
 
     public String getMessage(Integer code, String nick, String user, String host, String command) {

@@ -95,6 +95,29 @@ public class Client extends Thread implements Actor {
                     }
                 }
 
+                if (user.isRegister() && command.getName() == "JOIN") {
+                    if (command.getParameters()[1] != null) {
+                        tell(ircServer.join(command.getParameters()[1], user), null);
+                    }
+                }
+
+                if (user.isRegister() && command.getName() == "PART") {
+                    ircServer.leaveChannel(user, command.getParameters()[1]);
+                }
+
+                if (user.isRegister() && command.getName() == "TOPIC") {
+                    int i = command.getParameters().length;
+
+                    switch(i) {
+                        case 2:
+                            tell(ircServer.topic(command.getParameters()[1], user), null);
+                            break;
+                        case 3:
+                            ircServer.setTopic(command.getParameters()[1], command.getParameters()[2], user);
+                    }
+
+                }
+
                 if (user.isRegister() && command.getName() == "QUIT") {
                     ircServer.removeUser(user, command.getParameters()[1]);
                     shutdown();

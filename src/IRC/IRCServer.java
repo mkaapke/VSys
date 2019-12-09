@@ -9,13 +9,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class IRCServer {
 
     private List<User> users = new ArrayList<User>();
+    private List<Channel> channels = new ArrayList<Channel>();
+    private List<User> userPerChannel = new ArrayList<>();
+    private Map<String, List<User>> channelUser = new HashMap<>();
     private ServerSocket serverSocket;
     private Errors errors;
     private Replies replies;
@@ -29,6 +30,8 @@ public class IRCServer {
         created = df.format(date);
         replies = new Replies(host, created);
         errors = new Errors(host);
+        channels.add(new Channel("#Test", null, users));
+        channels.add(new Channel("#max", "test test", users));
         request();
     }
 
@@ -43,7 +46,7 @@ public class IRCServer {
     }
 
 
-    String addUser(String nick, String username, String fullname, Client client) throws IOException {
+    String addUser(String nick, String username, String fullname, Client client) {
         User newUser = new User(nick, username, fullname, client, true);
         for (User u : users) {
             if (u.equals(newUser) && u.isRegister()) //ERR_ALREADYREGISTRED
@@ -66,7 +69,7 @@ public class IRCServer {
                 + replies.getMessage(004, null, null, null) + "\n"; //RPL_MYINFO
     }
 
-    String nick(String nick, User sender) throws IOException {
+    String nick(String nick, User sender) {
         if (nick.length() == 0) { //ERR_NONICKNAMEGIVEN
             return errors.getMessage(431, null, null, null, null);
         }
@@ -100,6 +103,19 @@ public class IRCServer {
                 return true;
             }
         }
+
+        for (Channel c : channels) {
+            List<User> channelUser = new ArrayList<>(c.getUsers());
+            if (c.getName().equals(nick) && channelUser.contains(sender)) {
+                for (User u : channelUser) {
+                    u.sendMessage(head + " " + c.toString() + " :" + message);
+                }
+                return true;
+            } else {
+                sender.sendMessage(errors.getMessage(404, nick, null, null, null));  // ERR_CANNOTSENDTOCHAN
+
+            }
+        }
         sender.sendMessage(errors.getMessage(401, nick, null, null, null)); //ERR_NOSUCHNICK
         return false;
     }
@@ -111,6 +127,15 @@ public class IRCServer {
                 u.sendMessage(head + " :" + message);
             }
         }
+
+        for (Channel c : channels) {
+            List<User> channelUser = new ArrayList<>(c.getUsers());
+            if (c.getName().equals(nick) && channelUser.contains(sender)) {
+                for (User u : channelUser) {
+                    u.sendMessage(head + " " + c.getName() + " :" + message);
+                }
+            }
+        }
     }
 
     public boolean existNick(String nick) {
@@ -119,6 +144,25 @@ public class IRCServer {
                 return true;
         }
         return false;
+    }
+
+    String join(String channelName, User sender) {
+
+        for (Channel c : channels) {
+            if(!(c.getName().equals(channelName))) {
+                return errors.getMessage(403, channelName, null, null, null); // ERR_NOSUCHCHANNEL
+            }
+        }
+        userPerChannel.add(sender);
+        channelUser.put(channelName, userPerChannel);
+
+        return replies.getMessage(353, sender.getNick(), channelName, null) + "\n"  // RPL_NAMEREPLY
+               + replies.getMessage(366, sender.getNick(), channelName, null);  // RPL_ENDOFNAMES
+
+    }
+
+    void channelMessages(String channel, User sender) {
+
     }
 
     public void serverMessages(String message) throws IOException {
@@ -143,6 +187,46 @@ public class IRCServer {
         user.getClientThread().interrupt();
         users.remove(user);
         serverMessages(message);
+    }
+
+    boolean leaveChannel(User user, String channel) throws IOException {
+        if(!(channelUser.get(channel).contains(user))) {
+            user.sendMessage(errors.getMessage(442, user.getNick(), null, null, null));
+            return false;
+        }
+        if(!(channelUser.containsKey(channel))) {
+            user.sendMessage(errors.getMessage(403, user.getNick(), null, null, null));
+            return false;
+        }
+
+        return channelUser.get(channel).remove(user);
+    }
+
+    String topic(String channelName, User sender) {
+        for (Channel c : channels) {
+            if (c.getName().equals(channelName)) {
+                return c.getTopic() == null ? replies.getMessage(331, channelName, null, null) : replies.getMessage(332, channelName, c.getTopic(), null);
+            }
+        }
+
+        return errors.getMessage(442, sender.getNick(), null, null, null);
+
+    }
+
+    boolean setTopic(String channelName, String messsage, User sender) throws IOException {
+        for (Channel c : channels) {
+            if (c.getName().equals(channelName) && c.getUsers().contains(sender)) {
+                if (messsage.equals(":")) {
+                    c.setTopic(null);
+                    return true;
+                } else {
+                    c.setTopic(messsage.substring(1));
+                    return true;
+                }
+            }
+        }
+        sender.sendMessage(errors.getMessage(442, sender.getNick(), null, null, null));
+        return false;
     }
 
     String whoIs(String nick) {

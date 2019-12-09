@@ -24,6 +24,11 @@ public class Replies {
         replies.put(311, new Reply(311, host + " RPL_WHOISUSER", "<parameter1> <parameter1>@<parameter2> <parameter2> * :<parameter3>"));
         replies.put(312, new Reply(312, host + " RPL_WHOISSERVER", "<parameter1> <parameter2> :<parameter3>"));
         replies.put(318, new Reply(318, host + " RPL_ENDOFWHOIS", "<parameter1> :End of WHOIS list"));
+        replies.put(353, new Reply(353, host + " RPL_NAMEREPLY", "<parameter1> = <parameter2> :Hans Peter Klaus"));// "nick = server :name1 name2 name3"
+        replies.put(366, new Reply(366, host + " RPL_ENDOFNAMES", "<parameter1> <parameter2> :End of NAMES list"));
+        replies.put(331, new Reply(331, host + " RPL_NOTOPIC", "<parameter1> :Not topic is set"));
+        replies.put(332, new Reply(332, host + " RPL_TOPIC", "<parameter1> :<parameter2>"));
+
     }
 
     public String getMessage(Integer code, String para1, String para2, String para3) {
