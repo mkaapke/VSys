@@ -30,8 +30,10 @@ public class IRCServer {
         created = df.format(date);
         replies = new Replies(host, created);
         errors = new Errors(host);
-        channels.add(new Channel("#Test", null, users));
-        channels.add(new Channel("#max", "test test", users));
+        Channel max = new Channel("#Test", "nice Channel", users);
+        channelUser.put(max.getName(), users);
+        channelUser.put("#max", null);
+        channelUser.put("#Test2", null);
         request();
     }
 
@@ -104,18 +106,20 @@ public class IRCServer {
             }
         }
 
-        for (Channel c : channels) {
-            List<User> channelUser = new ArrayList<>(c.getUsers());
-            if (c.getName().equals(nick) && channelUser.contains(sender)) {
-                for (User u : channelUser) {
-                    u.sendMessage(head + " " + c.toString() + " :" + message);
-                }
-                return true;
-            } else {
-                sender.sendMessage(errors.getMessage(404, nick, null, null, null));  // ERR_CANNOTSENDTOCHAN
 
+
+        if(channelUser.containsKey(nick)) {
+            for (User u : channelUser.get(nick)) {
+                u.sendMessage(head + " " + nick + " :" + message);
             }
+            return true;
         }
+        if (!channelUser.containsKey(nick)) {
+            sender.sendMessage(errors.getMessage(404, nick, null, null, null));  // ERR_CANNOTSENDTOCHAN
+            return false;
+        }
+
+
         sender.sendMessage(errors.getMessage(401, nick, null, null, null)); //ERR_NOSUCHNICK
         return false;
     }
