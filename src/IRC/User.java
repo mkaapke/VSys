@@ -7,14 +7,14 @@ public class User {
     private String fullname;
     private String address;
     private boolean register;
-    private Client clientThread;
+    private Client client;
     private boolean operator = false;
 
-    public User(String nick, String fullname, String address, Client clientThread, boolean register) {
+    public User(String nick, String fullname, String address, Client client, boolean register) {
         this.nick = nick;
         this.fullname = fullname;
         this.address = address;
-        this.clientThread = clientThread;
+        this.client = client;
         this.register = register;
     }
 
@@ -64,15 +64,15 @@ public class User {
         this.operator = operator;
     }
 
-    public Client getClientThread() {
-        return clientThread;
+    public Client getClient() {
+        return client;
     }
 
-    public void setClientThread(Client clientThread) {
-        this.clientThread = clientThread;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public void sendMessage(String message) throws IOException {
-        clientThread.tell(message, null);
+        client.tell(message, null);
     }
 }

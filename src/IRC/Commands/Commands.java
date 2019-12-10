@@ -21,7 +21,7 @@ public class Commands {
         commands.add((new Command("JOIN", 2, true)));
         commands.add((new Command("PART", 2, true)));
         commands.add((new Command("PART", 3, false)));
-        commands.add((new Command("TOPIC", 2, false)));
+        commands.add((new Command("TOPIC", 2, true)));
         commands.add((new Command("TOPIC", 3, false)));
     }
 

@@ -31,9 +31,12 @@ public class IRCServer {
         replies = new Replies(host, created);
         errors = new Errors(host);
         Channel max = new Channel("#Test", "nice Channel", users);
+        Channel test2 = new Channel("#Test2", "nice Channel", null);
+        channels.add(test2);
+        channels.add(max);
         channelUser.put(max.getName(), users);
         channelUser.put("#max", null);
-        channelUser.put("#Test2", null);
+        channelUser.put(test2.getName(), null);
         request();
     }
 
@@ -115,7 +118,7 @@ public class IRCServer {
             return true;
         }
         if (!channelUser.containsKey(nick)) {
-            sender.sendMessage(errors.getMessage(404, nick, null, null, null));  // ERR_CANNOTSENDTOCHAN
+            sender.sendMessage(errors.getMessage(404, nick, null, null, null));// ERR_CANNOTSENDTOCHAN
             return false;
         }
 
@@ -188,7 +191,7 @@ public class IRCServer {
     }
 
     void removeUser(User user, String message) throws IOException {
-        user.getClientThread().interrupt();
+        user.getClient().interrupt();
         users.remove(user);
         serverMessages(message);
     }
@@ -219,7 +222,7 @@ public class IRCServer {
 
     boolean setTopic(String channelName, String messsage, User sender) throws IOException {
         for (Channel c : channels) {
-            if (c.getName().equals(channelName) && c.getUsers().contains(sender)) {
+            if (c.getName().equals(channelName)) {
                 if (messsage.equals(":")) {
                     c.setTopic(null);
                     return true;

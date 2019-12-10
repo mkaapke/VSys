@@ -20,6 +20,12 @@ public class Client extends Thread implements Actor {
     private User user;
     private String client;
 
+    /**
+     * Konstruktor
+     * @param socket
+     * @param ircServer
+     * @throws IOException
+     */
     public Client(Socket socket, IRCServer ircServer) throws IOException {
         this.socket = socket;
         this.ircServer = ircServer;
@@ -28,6 +34,9 @@ public class Client extends Thread implements Actor {
         user = new User(null, null, socket.getRemoteSocketAddress().toString(), this, false);
     }
 
+    /**
+     * Startet den Transceiver im Thread
+     */
     public void run() {
         try {
             transceiver.start();
@@ -114,6 +123,7 @@ public class Client extends Thread implements Actor {
                             break;
                         case 3:
                             ircServer.setTopic(command.getParameters()[1], command.getParameters()[2], user);
+                            break;
                     }
 
                 }
@@ -172,14 +182,6 @@ public class Client extends Thread implements Actor {
         return command;
     }
 
-    public boolean checkParameter(String[] parameters) {
-        for (String s : parameters) {
-            if (s == null)
-                return false;
-        }
-        return true;
-    }
-
     @Override
     public void tell(String message, Actor sender) throws IOException {
         transceiver.tell(message, null);
@@ -189,10 +191,6 @@ public class Client extends Thread implements Actor {
     public void shutdown() throws IOException {
         transceiver.shutdown();
         socket.close();
-    }
-
-    public User getUser() {
-        return user;
     }
 
     public void setUser(User user) {
