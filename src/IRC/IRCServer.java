@@ -30,12 +30,14 @@ public class IRCServer {
         created = df.format(date);
         replies = new Replies(host, created);
         errors = new Errors(host);
-        Channel max = new Channel("#Test", "nice Channel", users);
-        Channel test2 = new Channel("#Test2", "nice Channel", null);
-        channels.add(test2);
+        Channel test = new Channel("#Test", "nice Channel", users);
+        Channel max = new Channel("#max", "nice Channel1", users);
+        Channel test2 = new Channel("#Test2", "nice Channel2", users);
+        channels.add(test);
         channels.add(max);
+        channels.add(test2);
         channelUser.put(max.getName(), users);
-        channelUser.put("#max", null);
+        channelUser.put(test.getName(), null);
         channelUser.put(test2.getName(), null);
         request();
     }
@@ -135,12 +137,9 @@ public class IRCServer {
             }
         }
 
-        for (Channel c : channels) {
-            List<User> channelUser = new ArrayList<>(c.getUsers());
-            if (c.getName().equals(nick) && channelUser.contains(sender)) {
-                for (User u : channelUser) {
-                    u.sendMessage(head + " " + c.getName() + " :" + message);
-                }
+        if(channelUser.containsKey(nick)) {
+            for (User u : channelUser.get(nick)) {
+                u.sendMessage(head + " " + nick + " :" + message);
             }
         }
     }

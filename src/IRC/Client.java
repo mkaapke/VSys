@@ -56,6 +56,19 @@ public class Client extends Thread implements Actor {
             tell(ircServer.getErrors().getMessage(421, null, null, null,
                     wrongCommand(message)), null);
         } else {
+            if (user.isRegister() && command.getName() == "TOPIC") {
+                int i = command.getParameters().length;
+
+                switch(i) {
+                    case 2:
+                        tell(ircServer.topic(command.getParameters()[1], user), null);
+                        break;
+                    case 3:
+                        ircServer.setTopic(command.getParameters()[1], command.getParameters()[2], user);
+                        break;
+                }
+
+            } else {
             if (command.getParameters().length != command.getSize()) { //ERR_NEEDMOREPARAMS
                 tell(ircServer.getErrors().getMessage(130, null, null, null,
                         command.getName()), null);
@@ -114,26 +127,14 @@ public class Client extends Thread implements Actor {
                     ircServer.leaveChannel(user, command.getParameters()[1]);
                 }
 
-                if (user.isRegister() && command.getName() == "TOPIC") {
-                    int i = command.getParameters().length;
 
-                    switch(i) {
-                        case 2:
-                            tell(ircServer.topic(command.getParameters()[1], user), null);
-                            break;
-                        case 3:
-                            ircServer.setTopic(command.getParameters()[1], command.getParameters()[2], user);
-                            break;
-                    }
-
-                }
 
                 if (user.isRegister() && command.getName() == "QUIT") {
                     ircServer.removeUser(user, command.getParameters()[1]);
                     shutdown();
                 }
 
-            }
+            }}
         }
     }
 
